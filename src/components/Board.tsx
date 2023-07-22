@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { MouseEvent, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import Cell from "./Cell";
 import { Board, Coordinates, GameStatus } from "../types/game";
@@ -14,10 +14,14 @@ export default function BoardPage() {
     dispatch(gameAction.setGame(boardSetting));
   }, [boardSetting, dispatch]);
 
-  const handleCellClick = (coordinates: Coordinates) => {
+  const handleOpenCell = (coordinates: Coordinates) => {
     if (status === GameStatus.READY || status === GameStatus.RUN) {
       dispatch(gameAction.openCell(coordinates));
     }
+  };
+  const handleFlagCell = (e: MouseEvent<HTMLElement>, coordinates: Coordinates) => {
+    e.preventDefault();
+    dispatch(gameAction.flagCell(coordinates));
   };
 
   return (
@@ -28,7 +32,8 @@ export default function BoardPage() {
             <Cell
               cell={cell}
               coordinates={{ x, y }}
-              onClick={handleCellClick}
+              onClick={handleOpenCell}
+              onRightClick={handleFlagCell}
             />
           ))}
         </div>

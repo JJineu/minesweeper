@@ -8,6 +8,7 @@ export type Cell = {
   isMine: boolean;
   isOpen: boolean;
   nearMines: number;
+  isFlag: boolean;
 };
 export type Board = {
   board: Cell[][];

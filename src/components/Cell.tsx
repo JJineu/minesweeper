@@ -1,14 +1,18 @@
+import { MouseEvent } from "react";
 import { Coordinates, Cell as CellType } from "../types/game";
 
 type Props = {
   cell: CellType;
   coordinates: Coordinates;
   onClick: (coordinates: Coordinates) => void;
+  onRightClick: (e: MouseEvent<HTMLElement>, coordinates: Coordinates) => void;
 };
-export default function Cell({ cell, coordinates, onClick }: Props) {
-  // 우클릭
-  // 깃발을 표시한다. 좌클릭 막는다. 폭탄 개수를 업데이트 한다. (status: 폭탄 개수 - 깃발 개수)
-
+export default function Cell({
+  cell,
+  coordinates,
+  onClick,
+  onRightClick,
+}: Props) {
   const show = () => {
     if (cell.isOpen) {
       if (cell.isMine)
@@ -17,7 +21,29 @@ export default function Cell({ cell, coordinates, onClick }: Props) {
             <img src="/img/boom.jpg" alt="boom" />
           </div>
         );
-      return <div className="w-full h-full bg-boom">{cell.nearMines}</div>;
+      return (
+        <div
+          className={`w-full h-full bg-boom font-bold ${
+            cell.nearMines === 0
+              ? "text-boom"
+              : cell.nearMines === 2
+              ? "text-green-600"
+              : cell.nearMines === 3
+              ? "text-red-600"
+              : cell.nearMines === 4
+              ? "text-purple-600"
+              : ""
+          } `}
+        >
+          {cell.nearMines}
+        </div>
+      );
+    } else if (cell.isFlag) {
+      return (
+        <div className="w-full h-full bg-boom">
+          <img src="/img/flag.ico" alt="flag" />
+        </div>
+      );
     }
   };
 
@@ -25,6 +51,7 @@ export default function Cell({ cell, coordinates, onClick }: Props) {
     <div
       className="w-5 h-5 border text-xs text-center"
       onClick={() => onClick(coordinates)}
+      onContextMenu={(e) => onRightClick(e, coordinates)}
     >
       {show()}
     </div>

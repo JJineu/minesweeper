@@ -5,6 +5,7 @@ import { GameStatus } from "../types/game";
 
 export default function StatusBoard() {
   const dispatch = useAppDispatch();
+  const game = useAppSelector((state) => state.game);
   const state = useAppSelector((state) => state.game.status);
   const time = useAppSelector((state) => state.game.time);
 
@@ -15,12 +16,28 @@ export default function StatusBoard() {
     state === GameStatus.RUN ? 1000 : null
   );
 
+  const boardSetting = useAppSelector((state) => state.game.boardSetting);
+  // 게임을 재시작 합니다.
+  const restartGame = () => {
+    dispatch(gameAction.setGame(boardSetting));
+  };
+
+  const flagCount = game.board.flat().filter((c) => c.isFlag === true).length;
   return (
-    <div className="p-5 bg-red-300">
+    <div className="p-2 bg-red-300 flex justify-between">
       {/* 남은 폭탄 개수 */}
+      <div className="font-bold text-blue-600 bg-slate-100 w-10 h-7 ml-2 text-center border rounded-sm">
+        {game.boardSetting.minesCount - flagCount}
+      </div>
       {/* 리셋 버튼 */}
+      <button
+        onClick={restartGame}
+        className="bg-slate-100 w-7 h-7 border rounded-sm text-red-500"
+      >
+        ♥
+      </button>
       {/* 타이머 */}
-      <div className="font-bold text-blue-600 bg-slate-100 w-11 h-6 text-right px-1">
+      <div className="font-bold text-blue-600 bg-slate-100 w-10 h-7 text-center border rounded-sm">
         {time}
       </div>
     </div>

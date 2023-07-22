@@ -7,7 +7,6 @@ import {
   GameStatus,
   Status,
 } from "../../types/game";
-import { RootState } from "..";
 
 const initialState: Board & Status = {
   board: [],
@@ -22,12 +21,14 @@ export const game = createSlice({
     setBoard: (state, action: PayloadAction<BoardSetting>) => {
       const { width, height, minesCount } = action.payload;
       state.status = GameStatus.READY;
+      state.time = 0;
       state.boardSetting = { width, height, minesCount };
     },
-    setGame: (state, action) => {
+    setGame: (state, action: PayloadAction<BoardSetting>) => {
       const { width, height, minesCount } = state.boardSetting;
       state.board = [];
       state.status = GameStatus.READY;
+      state.time = 0;
 
       for (let y = 0; y < height; y++) {
         state.board.push([]);
@@ -38,6 +39,7 @@ export const game = createSlice({
             isMine: false,
             isOpen: false,
             nearMines: 0,
+            isFlag: false,
           });
         }
       }
@@ -55,6 +57,9 @@ export const game = createSlice({
     openCell: (state, action: PayloadAction<Coordinates>) => {
       const { x, y } = action.payload;
       state.status = GameStatus.RUN;
+
+      // 플래그가 있는 경우 클릭할 수 없습니다.
+      if (state.board[y][x].isFlag) return;
 
       // 오픈된 셀의 개수를 구합니다.
       const getOpenCount = (board: Cell[][]) =>
@@ -151,9 +156,11 @@ export const game = createSlice({
     updateTimer: (state) => {
       state.time += 1;
     },
+    flagCell: (state, action: PayloadAction<Coordinates>) => {
+      const { x, y } = action.payload;
+      state.board[y][x].isFlag = !state.board[y][x].isFlag;
+    },
   },
 });
-
-export const setBoard = (state: RootState) => state.game.board;
 
 export const gameAction = game.actions;
