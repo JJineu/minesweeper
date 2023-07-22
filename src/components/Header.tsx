@@ -33,7 +33,6 @@ export default function Header() {
 
   return (
     <div className="p-3 bg-blue-300 w-full flex gap-1 text-xs">
-      {/* <img src="/img/flag.ico" /> */}
       <button onClick={restartGame}>New</button>
       <select name="difficulty" onChange={handleDifficulty}>
         <option value="Beginner" selected>

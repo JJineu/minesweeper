@@ -1,25 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { Board, Cell, Coordinates, GameStatus, Status } from "../../types/game";
 
-export type Coordinates = {
-  x: number;
-  y: number;
-};
-export type Cell = {
-  x: number;
-  y: number;
-  isMine: boolean;
-  isOpen: boolean;
-  nearMines: number;
-};
-export type Board = {
-  board: Cell[][];
-};
-type Status = {
-  status: string;
-};
-
-const initialState: Board = {
+const initialState: Board & Status = {
   board: [],
+  status: GameStatus.READY,
 };
 export const game = createSlice({
   name: "game",
@@ -28,6 +12,7 @@ export const game = createSlice({
     setGame: (state, action) => {
       const { width, height, minesCount } = action.payload;
       state.board = [];
+      state.status = GameStatus.READY;
 
       for (let y = 0; y < height; y++) {
         state.board.push([]);
@@ -54,6 +39,7 @@ export const game = createSlice({
     },
     openCell: (state, action: PayloadAction<Coordinates>) => {
       const { x, y } = action.payload;
+      state.status = GameStatus.RUN;
 
       // 오픈된 셀의 개수를 구합니다.
       const getOpenCount = (board: Cell[][]) =>
@@ -69,6 +55,26 @@ export const game = createSlice({
             state.board[j][i].isMine = true;
             break;
           }
+        }
+      }
+
+      // 게임의 승리조건을 검증합니다.
+      if (state.board[y][x].isMine) {
+        state.status = GameStatus.LOSE;
+        // 모든 폭탄을 오픈합니다.
+        state.board.flat().map((c) => {
+          if (c.isMine) {
+            c.isOpen = true;
+          }
+        });
+        return
+      } else {
+        if (
+          getOpenCount(state.board) ===
+          state.board.length * state.board[0].length
+        ) {
+          state.status = GameStatus.WIN;
+          return;
         }
       }
 
