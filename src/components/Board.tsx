@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import Cell from "./Cell";
 import { Coordinates, gameAction } from "../store/slice/game";
@@ -9,7 +9,15 @@ export default function Board() {
   const handleCellClick = (coordinates: Coordinates) => {
     dispatch(gameAction.openCell(coordinates));
   };
-  // 게임 시작과 종료 // 승리 패배
+  // 시작
+  // 첫 번째 칸 누르면 시작(첫 번째 칸은 폭탄이 아니다)
+  
+  const [gameState, setGameState] = useState('');
+  // 종료
+  // 패배: 폭탄이 나왔을 때
+    // 모든 폭탄 보여주기
+  // 승리: 폭탄 제외하고 모든 칸이 열렸을 떄
+
 
   useEffect(() => {
     dispatch(gameAction.setGame({ width: 8, height: 8, minesCount: 10 }));

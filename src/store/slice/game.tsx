@@ -14,10 +14,13 @@ export type Cell = {
 export type Board = {
   board: Cell[][];
 };
+type Status = {
+  status: string;
+};
+
 const initialState: Board = {
   board: [],
 };
-
 export const game = createSlice({
   name: "game",
   initialState,
@@ -49,11 +52,25 @@ export const game = createSlice({
         }
       }
     },
-    resetMines: (state, action) => {
-      const { clickedX, clickedY } = action.payload;
-    },
     openCell: (state, action: PayloadAction<Coordinates>) => {
       const { x, y } = action.payload;
+
+      // 오픈된 셀의 개수를 구합니다.
+      const getOpenCount = (board: Cell[][]) =>
+        board.flat().filter((c) => c.isOpen === true).length;
+
+      // 첫 번째 셀이 폭탄인 경우 재배치를 합니다.
+      if (getOpenCount(state.board) === 0 && state.board[y][x].isMine) {
+        state.board[y][x].isMine = false;
+        while (true) {
+          let i = Math.floor(Math.random() * state.board[0].length);
+          let j = Math.floor(Math.random() * state.board.length);
+          if (!(x === i && y === j) && !state.board[j][i].isMine) {
+            state.board[j][i].isMine = true;
+            break;
+          }
+        }
+      }
 
       // 셀 주변의 폭탄 수를 계산합니다.
       const calculateMineCount = (board: Cell[][], { x, y }: Coordinates) => {
@@ -76,9 +93,6 @@ export const game = createSlice({
         }
         return mineCount;
       };
-
-      // 첫 번째 셀이 폭탄인 경우 재배치를 합니다.
-
       // 스택에 현재 셀을 추가합니다.
       const stack = [{ x, y }];
       // 스택에는 안전지대인 셀이 추가되며, 더이상 안전지대가 없을 때까지 탐색합니다.
