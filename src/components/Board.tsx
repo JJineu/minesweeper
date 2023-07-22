@@ -1,17 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import Cell from "./Cell";
-import { BoardSetting, Coordinates, GameStatus } from "../types/game";
+import { Board, Coordinates, GameStatus } from "../types/game";
 import { gameAction } from "../store/slice/game";
 
-export default function Board() {
+export default function BoardPage() {
   const board = useAppSelector((state) => state.game.board);
+  const boardSetting = useAppSelector((state) => state.game.boardSetting);
   const status = useAppSelector((state) => state.game.status);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(gameAction.setGame({ width: 8, height: 8, minesCount: 10 }));
-  }, []);
+    dispatch(gameAction.setGame(boardSetting));
+  }, [boardSetting, dispatch]);
 
   const handleCellClick = (coordinates: Coordinates) => {
     if (status === GameStatus.READY || status === GameStatus.RUN) {

@@ -11,9 +11,11 @@ export type Cell = {
 };
 export type Board = {
   board: Cell[][];
+  boardSetting: BoardSetting;
 };
 export type Status = {
   status: GameStatus;
+  time: number
 };
 export enum GameStatus {
   READY,
@@ -22,7 +24,7 @@ export enum GameStatus {
   LOSE,
 }
 export type BoardSetting = {
-    width: number;
-    height: number;
-    minesCount: number;
-}
+  width: number;
+  height: number;
+  minesCount: number;
+};

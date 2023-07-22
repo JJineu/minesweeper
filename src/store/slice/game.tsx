@@ -7,17 +7,25 @@ import {
   GameStatus,
   Status,
 } from "../../types/game";
+import { RootState } from "..";
 
 const initialState: Board & Status = {
   board: [],
+  boardSetting: { width: 8, height: 8, minesCount: 10 },
   status: GameStatus.READY,
+  time: 0,
 };
 export const game = createSlice({
   name: "game",
   initialState,
   reducers: {
-    setGame: (state, action: PayloadAction<BoardSetting>) => {
+    setBoard: (state, action: PayloadAction<BoardSetting>) => {
       const { width, height, minesCount } = action.payload;
+      state.status = GameStatus.READY;
+      state.boardSetting = { width, height, minesCount };
+    },
+    setGame: (state, action) => {
+      const { width, height, minesCount } = state.boardSetting;
       state.board = [];
       state.status = GameStatus.READY;
 
@@ -140,7 +148,12 @@ export const game = createSlice({
         }
       }
     },
+    updateTimer: (state) => {
+      state.time += 1;
+    },
   },
 });
+
+export const setBoard = (state: RootState) => state.game.board;
 
 export const gameAction = game.actions;
