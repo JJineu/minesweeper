@@ -1,22 +1,23 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import Cell from "./Cell";
-import { gameAction } from "../store/slice/game";
+import { Coordinates, gameAction } from "../store/slice/game";
 
 export default function Board() {
-  const game = useAppSelector((state) => state.game);
+  const board = useAppSelector((state) => state.game.board);
   const dispatch = useAppDispatch();
-  const handleCellClick = (x: number, y: number) => {
-    console.log(x, y);
+  const handleCellClick = (coordinates: Coordinates) => {
+    dispatch(gameAction.openCell(coordinates));
   };
+  // 게임 시작과 종료 // 승리 패배
 
   useEffect(() => {
-    dispatch(gameAction.setGame({ width: 8, height: 8}));
+    dispatch(gameAction.setGame({ width: 8, height: 8, minesCount: 10 }));
   }, []);
 
   return (
     <div className="bg-boom p-2">
-      {game.board.map((row, y) => (
+      {board.map((row, y) => (
         <div className="flex">
           {row.map((cell, x) => (
             <Cell
