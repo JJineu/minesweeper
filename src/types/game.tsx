@@ -21,3 +21,8 @@ export enum GameStatus {
   WIN,
   LOSE,
 }
+export type BoardSetting = {
+    width: number;
+    height: number;
+    minesCount: number;
+}

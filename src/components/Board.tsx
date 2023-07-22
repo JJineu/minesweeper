@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import Cell from "./Cell";
-import { Coordinates, GameStatus } from "../types/game";
+import { BoardSetting, Coordinates, GameStatus } from "../types/game";
 import { gameAction } from "../store/slice/game";
 
 export default function Board() {
@@ -14,17 +14,13 @@ export default function Board() {
   }, []);
 
   const handleCellClick = (coordinates: Coordinates) => {
-    if (status === GameStatus.READY || GameStatus.RUN) {
+    if (status === GameStatus.READY || status === GameStatus.RUN) {
       dispatch(gameAction.openCell(coordinates));
     }
   };
 
-  if (status === GameStatus.WIN) {
-  } else if (status === GameStatus.LOSE) {
-  }
-
   return (
-    <div className="bg-boom p-2">
+    <div className="bg-slate-400 border m-2">
       {board.map((row, y) => (
         <div className="flex">
           {row.map((cell, x) => (

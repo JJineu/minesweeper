@@ -1,5 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Board, Cell, Coordinates, GameStatus, Status } from "../../types/game";
+import {
+  Board,
+  BoardSetting,
+  Cell,
+  Coordinates,
+  GameStatus,
+  Status,
+} from "../../types/game";
 
 const initialState: Board & Status = {
   board: [],
@@ -9,7 +16,7 @@ export const game = createSlice({
   name: "game",
   initialState,
   reducers: {
-    setGame: (state, action) => {
+    setGame: (state, action: PayloadAction<BoardSetting>) => {
       const { width, height, minesCount } = action.payload;
       state.board = [];
       state.status = GameStatus.READY;
@@ -67,7 +74,7 @@ export const game = createSlice({
             c.isOpen = true;
           }
         });
-        return
+        return;
       } else {
         if (
           getOpenCount(state.board) ===
