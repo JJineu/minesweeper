@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import Cell from "./Cell";
-import { Board, Coordinates, GameStatus } from "../types/game";
+import { Coordinates, GameStatus } from "../types/game";
 import { gameAction } from "../store/slice/game";
 
 export default function BoardPage() {
@@ -11,7 +11,7 @@ export default function BoardPage() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(gameAction.setGame(boardSetting));
+    dispatch(gameAction.setGame());
   }, [boardSetting, dispatch]);
 
   const handleOpenCell = (coordinates: Coordinates) => {
@@ -19,9 +19,15 @@ export default function BoardPage() {
       dispatch(gameAction.openCell(coordinates));
     }
   };
-  const handleFlagCell = (e: MouseEvent<HTMLElement>, coordinates: Coordinates) => {
+
+  const handleFlagCell = (
+    e: MouseEvent<HTMLElement>,
+    coordinates: Coordinates
+  ) => {
     e.preventDefault();
-    dispatch(gameAction.flagCell(coordinates));
+    if (status === GameStatus.READY || status === GameStatus.RUN) {
+      dispatch(gameAction.flagCell(coordinates));
+    }
   };
 
   return (
@@ -30,6 +36,7 @@ export default function BoardPage() {
         <div className="flex">
           {row.map((cell, x) => (
             <Cell
+              key={`${y}-${x}`}
               cell={cell}
               coordinates={{ x, y }}
               onClick={handleOpenCell}

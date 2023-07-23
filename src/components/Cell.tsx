@@ -13,6 +13,8 @@ export default function Cell({
   onClick,
   onRightClick,
 }: Props) {
+  console.log("re-cell", coordinates);
+  
   const show = () => {
     if (cell.isOpen) {
       if (cell.isMine)
