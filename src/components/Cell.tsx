@@ -1,18 +1,13 @@
-import { MouseEvent } from "react";
+import { MouseEvent, memo, useEffect } from "react";
 import { Coordinates, Cell as CellType } from "../types/game";
 
 type Props = {
   cell: CellType;
-  coordinates: Coordinates;
   onClick: (coordinates: Coordinates) => void;
   onRightClick: (e: MouseEvent<HTMLElement>, coordinates: Coordinates) => void;
 };
-export default function Cell({
-  cell,
-  coordinates,
-  onClick,
-  onRightClick,
-}: Props) {
+
+export default function Cell({ cell, onClick, onRightClick }: Props) {
   const show = () => {
     if (cell.isOpen) {
       if (cell.isMine)
@@ -50,8 +45,8 @@ export default function Cell({
   return (
     <div
       className="w-5 h-5 border text-xs text-center"
-      onClick={() => onClick(coordinates)}
-      onContextMenu={(e) => onRightClick(e, coordinates)}
+      onClick={() => onClick(cell.coordinate)}
+      onContextMenu={(e) => onRightClick(e, cell.coordinate)}
     >
       {show()}
     </div>

@@ -1,8 +1,9 @@
 import { MouseEvent, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import Cell from "./Cell";
-import { Board, Coordinates, GameStatus } from "../types/game";
+import { Coordinates, GameStatus } from "../types/game";
 import { gameAction } from "../store/slice/game";
+import React from "react";
 
 export default function BoardPage() {
   const board = useAppSelector((state) => state.game.board);
@@ -11,7 +12,7 @@ export default function BoardPage() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(gameAction.setGame(boardSetting));
+    dispatch(gameAction.setGame());
   }, [boardSetting, dispatch]);
 
   const handleOpenCell = (coordinates: Coordinates) => {
@@ -19,19 +20,25 @@ export default function BoardPage() {
       dispatch(gameAction.openCell(coordinates));
     }
   };
-  const handleFlagCell = (e: MouseEvent<HTMLElement>, coordinates: Coordinates) => {
+
+  const handleFlagCell = (
+    e: MouseEvent<HTMLElement>,
+    coordinates: Coordinates
+  ) => {
     e.preventDefault();
-    dispatch(gameAction.flagCell(coordinates));
+    if (status === GameStatus.READY || status === GameStatus.RUN) {
+      dispatch(gameAction.flagCell(coordinates));
+    }
   };
 
   return (
     <div className="bg-slate-400 border m-2">
       {board.map((row, y) => (
-        <div className="flex">
+        <div className="flex" key={y}>
           {row.map((cell, x) => (
-            <Cell
+            <MemoCell
+              key={`${y}-${x}`}
               cell={cell}
-              coordinates={{ x, y }}
               onClick={handleOpenCell}
               onRightClick={handleFlagCell}
             />
@@ -41,3 +48,7 @@ export default function BoardPage() {
     </div>
   );
 }
+
+const MemoCell = React.memo(Cell, (prevProps, nextProps) => {
+  return prevProps.cell === nextProps.cell;
+});

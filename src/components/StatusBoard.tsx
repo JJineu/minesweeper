@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useInterval } from "../hooks/useInterval";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { gameAction } from "../store/slice/game";
@@ -6,20 +7,25 @@ import { GameStatus } from "../types/game";
 export default function StatusBoard() {
   const dispatch = useAppDispatch();
   const game = useAppSelector((state) => state.game);
-  const state = useAppSelector((state) => state.game.status);
+  const status = useAppSelector((state) => state.game.status);
   const time = useAppSelector((state) => state.game.time);
 
   useInterval(
     () => {
       dispatch(gameAction.updateTimer());
     },
-    state === GameStatus.RUN ? 1000 : null
+    status === GameStatus.RUN ? 1000 : null
   );
 
-  const boardSetting = useAppSelector((state) => state.game.boardSetting);
+  useEffect(() => {
+    if (status === GameStatus.WIN) {
+      alert("YOU WIN");
+    }
+  }, [status]);
+
   // 게임을 재시작 합니다.
   const restartGame = () => {
-    dispatch(gameAction.setGame(boardSetting));
+    dispatch(gameAction.setGame());
   };
 
   const flagCount = game.board.flat().filter((c) => c.isFlag === true).length;
