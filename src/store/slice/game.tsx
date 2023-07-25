@@ -8,6 +8,34 @@ import {
   Status,
 } from "../../types/game";
 
+// 셀 주변의 폭탄 수를 계산합니다.
+const calculateMineCount = (board: Cell[][], { x, y }: Coordinates) => {
+  let mineCount = 0;
+  for (let dy = -1; dy <= 1; dy++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      if (dy === 0 && dx === 0) continue;
+      const newX = x + dx;
+      const newY = y + dy;
+
+      if (
+        newY >= 0 &&
+        newY < board.length &&
+        newX >= 0 &&
+        newX < board[0].length
+      ) {
+        if (board[newY][newX].isMine) {
+          mineCount++;
+        }
+      }
+    }
+  }
+  return mineCount;
+};
+
+// 오픈된 셀의 개수를 구합니다.
+const getOpenCount = (board: Cell[][]) =>
+  board.flat().filter((c) => c.isOpen === true).length;
+
 const initialState: Board & Status = {
   board: [],
   boardSetting: { width: 8, height: 8, minesCount: 10 },
@@ -31,8 +59,7 @@ export const game = createSlice({
 
       state.board = Array.from({ length: height }, (_, y) =>
         Array.from({ length: width }, (_, x) => ({
-          x,
-          y,
+          coordinate: { x, y },
           isMine: false,
           isOpen: false,
           nearMines: 0,
@@ -62,6 +89,7 @@ export const game = createSlice({
 
       // 첫 번째 셀이 폭탄인 경우 재배치를 합니다.
       if (state.status === GameStatus.READY && state.board[y][x].isMine) {
+        // 현재 셀의 폭탄 설정을 변경하고, 다른 위치에 폭탄을 재배치합니다.
         state.board[y][x].isMine = false;
         while (true) {
           let i = Math.floor(Math.random() * state.board[0].length);
@@ -99,33 +127,30 @@ export const game = createSlice({
         while (stack.length > 0) {
           const { x, y } = stack.pop() as Coordinates;
 
-          // 안전지대가 있다면 스택에 추가합니다.
-          if (!state.board[y][x].isMine && nearMines === 0) {
-            for (let dy = -1; dy <= 1; dy++) {
-              for (let dx = -1; dx <= 1; dx++) {
-                if (dx === 0 && dy === 0) continue;
-                const newX = x + dx;
-                const newY = y + dy;
-
-                if (
-                  newY >= 0 &&
-                  newY < state.board.length &&
-                  newX >= 0 &&
-                  newX < state.board[0].length &&
-                  !state.board[newY][newX].isOpen &&
-                  !state.board[newY][newX].isMine
-                ) {
-                  // 셀 주변의 폭탄 수를 계산합니다.
-                  const nearMines = calculateMineCount(state.board, {
-                    x: newX,
-                    y: newY,
-                  });
-                  // 셀에 방문 표시를 합니다.
-                  state.board[newY][newX].isOpen = true;
-                  state.board[newY][newX].nearMines = nearMines;
-                  if (nearMines === 0) {
-                    stack.push({ x: newX, y: newY });
-                  }
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              if (dx === 0 && dy === 0) continue;
+              const newX = x + dx;
+              const newY = y + dy;
+              if (
+                newY >= 0 &&
+                newY < state.board.length &&
+                newX >= 0 &&
+                newX < state.board[0].length &&
+                !state.board[newY][newX].isOpen &&
+                !state.board[newY][newX].isMine
+              ) {
+                // 셀 주변의 폭탄 수를 계산합니다.
+                const nearMines = calculateMineCount(state.board, {
+                  x: newX,
+                  y: newY,
+                });
+                // 셀에 방문 표시를 합니다.
+                state.board[newY][newX].isOpen = true;
+                state.board[newY][newX].nearMines = nearMines;
+                // 안전지대가 있다면 스택에 추가합니다.
+                if (nearMines === 0) {
+                  stack.push({ x: newX, y: newY });
                 }
               }
             }
@@ -152,34 +177,5 @@ export const game = createSlice({
     },
   },
 });
-
-// 셀 주변의 폭탄 수를 계산합니다.
-const calculateMineCount = (board: Cell[][], { x, y }: Coordinates) => {
-  console.log(x, y, "count");
-  let mineCount = 0;
-  for (let dy = -1; dy <= 1; dy++) {
-    for (let dx = -1; dx <= 1; dx++) {
-      if (dy === 0 && dx === 0) continue;
-      const newX = x + dx;
-      const newY = y + dy;
-
-      if (
-        newY >= 0 &&
-        newY < board.length &&
-        newX >= 0 &&
-        newX < board[0].length
-      ) {
-        if (board[newY][newX].isMine) {
-          mineCount++;
-        }
-      }
-    }
-  }
-  return mineCount;
-};
-
-// 오픈된 셀의 개수를 구합니다.
-const getOpenCount = (board: Cell[][]) =>
-  board.flat().filter((c) => c.isOpen === true).length;
 
 export const gameAction = game.actions;

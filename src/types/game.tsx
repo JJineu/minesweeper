@@ -3,8 +3,7 @@ export type Coordinates = {
   y: number;
 };
 export type Cell = {
-  x: number;
-  y: number;
+  coordinate: Coordinates;
   isMine: boolean;
   isOpen: boolean;
   nearMines: number;
@@ -16,7 +15,7 @@ export type Board = {
 };
 export type Status = {
   status: GameStatus;
-  time: number
+  time: number;
 };
 export enum GameStatus {
   READY,
