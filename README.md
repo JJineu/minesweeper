@@ -1,46 +1,32 @@
-# Getting Started with Create React App
+# Minesweeper
+- 지뢰 찾기 웹 게임입니다.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## 프로젝트 실행
+```
+yarn install
+yarn start
+```
 
-In the project directory, you can run:
+## 프로젝트 구조 및 기술 스택
+- React18 cra, Redux(RTK), TypeScript 를 사용했습니다.
+- 게임 상태를 Redux 라이브러리를 통해 전역으로 관리할 수 있도록 설계했습니다. 
 
-### `yarn start`
+```
+    "@reduxjs/toolkit": "^1.9.5",
+    "@types/node": "^16.7.13",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.1.1",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.4.2",
+    "web-vitals": "^2.1.0"
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 게임 동작 및 상세 내용
+- 게임 난이도 변경이 가능하며, 난이도 커스텀 기능이 있습니다.
+- 셀을 클릭하면 게임이 시작되며, 첫 번째 셀은 지뢰가 아닙니다.
+- DFS 알고리즘을 활용하여 지뢰를 탐색합니다.
+- 우클릭 시 깃발을 표시할 수 있습니다.

@@ -1,13 +1,20 @@
 import { MouseEvent, memo, useEffect } from "react";
-import { Coordinates, Cell as CellType } from "../types/game";
+import { Coordinates, Cell as CellType, GameStatus } from "../types/game";
 
 type Props = {
   cell: CellType;
   onClick: (coordinates: Coordinates) => void;
   onRightClick: (e: MouseEvent<HTMLElement>, coordinates: Coordinates) => void;
+  gameStatus: GameStatus;
 };
 
-export default function Cell({ cell, onClick, onRightClick }: Props) {
+export default function Cell({
+  cell,
+  onClick,
+  onRightClick,
+  gameStatus,
+}: Props) {
+  useEffect(() => {}, [onClick]);
   const show = () => {
     if (cell.isOpen) {
       if (cell.isMine)

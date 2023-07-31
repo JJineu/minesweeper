@@ -38,6 +38,7 @@ export default function BoardPage() {
           {row.map((cell, x) => (
             <MemoCell
               key={`${y}-${x}`}
+              gameStatus={status}
               cell={cell}
               onClick={handleOpenCell}
               onRightClick={handleFlagCell}
@@ -50,5 +51,8 @@ export default function BoardPage() {
 }
 
 const MemoCell = React.memo(Cell, (prevProps, nextProps) => {
-  return prevProps.cell === nextProps.cell;
+  return (
+    prevProps.cell === nextProps.cell &&
+    prevProps.gameStatus === nextProps.gameStatus
+  );
 });
