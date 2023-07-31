@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import Cell from "./Cell";
 import { Coordinates, GameStatus } from "../types/game";
 import { gameAction } from "../store/slice/game";
-import React from "react";
 
 export default function BoardPage() {
   const board = useAppSelector((state) => state.game.board);
@@ -36,9 +35,8 @@ export default function BoardPage() {
       {board.map((row, y) => (
         <div className="flex" key={y}>
           {row.map((cell, x) => (
-            <MemoCell
+            <Cell
               key={`${y}-${x}`}
-              gameStatus={status}
               cell={cell}
               onClick={handleOpenCell}
               onRightClick={handleFlagCell}
@@ -49,10 +47,3 @@ export default function BoardPage() {
     </div>
   );
 }
-
-const MemoCell = React.memo(Cell, (prevProps, nextProps) => {
-  return (
-    prevProps.cell === nextProps.cell &&
-    prevProps.gameStatus === nextProps.gameStatus
-  );
-});
